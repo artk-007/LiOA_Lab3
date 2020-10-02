@@ -5,9 +5,9 @@
 #include <time.h>
 #include <locale.h>
 const int N = 5;
-int G1[N][N], G2[N][N], G3[N][N];
+int G1[N][N], G2[N][N], G3[N][N], G4[N-1][N-1], G5[N+1][N+1];
 void otj(int x1, int x2, int r) {
-	int i, j;
+	int i, i1=x2, j, j1=x2;
 	for (i = 0; i < N; i++) 
 		for (j = 0; j < N; j++) 
 			G3[i][j] = G1[i][j];
@@ -28,18 +28,43 @@ void otj(int x1, int x2, int r) {
 	for (j = 0; j < N; j++) {
 		G3[x1][j] = G1[x1][j] || G1[x2][j];
 	}
+	for (i = 0; i < N-1; i++) {
+		for (j = 0,j1=x2; j < N-1; j++) {
+			if (j >= x2)
+				j1++;
+			if (i < x2 && j < x2)
+				G4[i][j] = G3[i][j];
+			if (i < x2 && j >= x2) 
+				G4[i][j] = G3[i][j1];
+			if (i >= x2 && j < x2)
+				G4[i][j] = G3[i1][j];
+			if (i >= x2 && j >= x2)
+				G4[i][j] = G3[i1][j1];
+			
 
+		}	
+		if (i >= x2)
+			i1++;
+	}
 	printf("\n");
 	printf("G1 otj \n");
-	for (i = 0; i < N; i++) {
+	for (i = 0; i < N ; i++) {
 		if (i == x2)
-			continue;;
-		for (j = 0; j < N; j++) {
+			continue;
+		for (j = 0; j < N ; j++) {
 			if (j == x2)
-				continue;;
-
+				continue;
 			printf("%d ", G3[i][j]);
 		}
+		printf("\n");
+	}
+	printf("\n");
+	printf("G1 otj \n");
+	for (i = 0; i < N-1; i++) {
+			for (j = 0; j < N-1; j++) {
+
+					printf("%d ", G4[i][j]);
+			}
 		printf("\n");
 	}
 }
