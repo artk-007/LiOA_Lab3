@@ -4,131 +4,163 @@
 #include <iostream>
 #include <time.h>
 #include <locale.h>
-const int N = 5;
-int G1[N][N], G2[N][N], G3[N][N], G4[N-1][N-1], G5[N+1][N+1];
-void otj(int x1, int x2, int r) {
-	int i, i1=x2, j, j1=x2;
-	for (i = 0; i < N; i++) 
-		for (j = 0; j < N; j++) 
-			G3[i][j] = G1[i][j];
-	
+#define SIZE 5
+void rand_Zap(int k, int(&Matrix)[SIZE][SIZE]) {
+	srand(time(NULL) * k);
+	printf("G%d \n",k);
+	for (int i = 0; i < SIZE; i++)
+		for (int j = 0; j < SIZE; j++) {
+			if (i == j) {
+				Matrix[i][j] = 0;
+			}
+			if (i < j) {
+				Matrix[i][j] = rand() % 2;
+				Matrix[j][i] = Matrix[i][j];
+			}
+		}
+}
+void print_G(int (&Matrix)[SIZE][SIZE] ){
+	for (int i = 0; i < SIZE; i++) {
+		for (int j = 0; j < SIZE; j++) {
+			printf("%d ", Matrix[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+void copy(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
+	for (int i = 0; i < SIZE; i++)
+		for (int j = 0; j < SIZE; j++)
+			Matrix2[i][j] = Matrix1[i][j];
+}
+void otj(int (&constant)[SIZE][SIZE], int (&work)[SIZE][SIZE], int (&Matrix)[SIZE - 1][SIZE - 1]){
+	int x1, x2;
+	printf("Введите 2 вершины для их отождествления \n");
+	scanf("%d%d", &x1, &x2);
+	int	i, j, i1, j1;
 	x1--; x2--;
+	if ((x1 > SIZE - 1) || (x2 > SIZE - 1) || (x1 < 0) || (x2 < 0)) {
+		printf("\n ошибка Нет вершин(ы)\n");
+		return;
+	}
 	if (x1 > x2) {
 		i = x1;
 		x1 = x2;
 		x2 = i;
 	}
-	if (G1[x1][x2] == 1 && r==1)
-		G3[x1][x1] == 1;
-	else
-		G3[x1][x1] == 0;
-	for (i = 0; i < N; i++) {
-		G3[i][x1] = G1[i][x1] || G1[i][x2];
+	copy(constant, work);
+	for (i = 0; i < SIZE; i++) {
+		work[i][x1] = constant[i][x1] || constant[i][x2];
 	}
-	for (j = 0; j < N; j++) {
-		G3[x1][j] = G1[x1][j] || G1[x2][j];
+	for (j = 0; j < SIZE; j++) {
+		work[x1][j] = constant[x1][j] || constant[x2][j];
 	}
-	for (i = 0; i < N-1; i++) {
-		for (j = 0,j1=x2; j < N-1; j++) {
+	for (i = 0, i1=x2+1; i < SIZE - 1; i++) {
+		for (j = 0, j1 = x2; j < SIZE - 1; j++) {
 			if (j >= x2)
 				j1++;
 			if (i < x2 && j < x2)
-				G4[i][j] = G3[i][j];
-			if (i < x2 && j >= x2) 
-				G4[i][j] = G3[i][j1];
+				Matrix[i][j] = work[i][j];
+			if (i < x2 && j >= x2)
+				Matrix[i][j] = work[i][j1];
 			if (i >= x2 && j < x2)
-				G4[i][j] = G3[i1][j];
+				Matrix[i][j] = work[i1][j];
 			if (i >= x2 && j >= x2)
-				G4[i][j] = G3[i1][j1];
-			
-
-		}	
-		if (i >= x2)
-			i1++;
-	}
-	printf("\n");
-	printf("G1 otj \n");
-	for (i = 0; i < N ; i++) {
-		if (i == x2)
-			continue;
-		for (j = 0; j < N ; j++) {
-			if (j == x2)
-				continue;
-			printf("%d ", G3[i][j]);
+				Matrix[i][j] = work[i1][j1];
 		}
-		printf("\n");
+		if (i >= x2) i1++;
 	}
-	printf("\n");
-	printf("G1 otj \n");
-	for (i = 0; i < N-1; i++) {
-			for (j = 0; j < N-1; j++) {
-
-					printf("%d ", G4[i][j]);
-			}
+	if (constant[x1][x2] == 1)
+		Matrix[x1][x1] = 1;
+	else
+		Matrix[x1][x1] = 0;
+	for (i = 0; i < SIZE - 1; i++) {
+		for (j = 0; j < SIZE - 1; j++) {
+			printf("%d ", Matrix[i][j]);
+		}
 		printf("\n");
 	}
 }
-
-int main()
-{
-	setlocale(LC_ALL, "Rus");
-
-	int i, j, x1, x2, r ;
-	srand(time(NULL));
-	for (i = 0; i < N; i++)
-		for (j = 0; j < N; j++) {
-
-			if (i == j) {
-				G1[i][j] = 0;
-				G2[i][j] = 0;
-			}
-			if (i < j) {
-				G1[i][j] = rand() % 2;
-				G1[j][i] = G1[i][j];
-				G2[i][j] = rand() % 2;;
-				G2[j][i] = G2[i][j];
-			}
-		}
-	printf("G1 \n");
-	for (i = 0; i < N; i++) {
-		for (j = 0; j < N; j++) {
-			G3[i][j] = G1[i][j];
-			printf("%d ", G1[i][j]);
-		}
-		printf("\n");
-	}
-	printf("\n");
-	printf("G2 \n");
-	for (i = 0; i < N; i++) {
-		for (j = 0; j < N; j++) {
-			printf("%d ", G2[i][j]);
-		}
-		printf("\n");
-	}
-	//_________________Отождествление__________________
-	printf("\n\n");
-	printf("Введите 2 вершины для их отождествления \n");
-	scanf("%d%d", &x1, &x2);
-	if ((x1 > N) || (x2 > N) || (x1 < 1) || (x2 < 1))
-		printf("\n ошибка Нет вершин(ы)\n");
-	else {
-		
-		otj(x1, x2, 1);
-	}
-	//_______________________________________________________
-	//_________________стягивание ребра__________________
-	printf("\n\n");
+void stig(int(&constant)[SIZE][SIZE], int(&work)[SIZE][SIZE], int(&Matrix)[SIZE - 1][SIZE - 1]) {
+	int x1, x2;
 	printf("Введите 2 вершины, смежные ребру, которое нужно стянуть \n");
 	scanf("%d%d", &x1, &x2);
-	if (G1[x1][x2] == 0)
-		printf("\n ошибка Нет ребра\n");
+	int	i, j, i1, j1;
+	x1--; x2--;
+	if ((x1 > SIZE - 1) || (x2 > SIZE - 1) || (x1 < 0) || (x2 < 0)) {
+		printf("\n ошибка Нет вершин(ы)\n");
+		return;
+	}
 	else
-		if ((x1 > N) || (x2 > N) || (x1 < 1) || (x2 < 1))
-			printf("\n ошибка Нет вершин(ы)\n");
-		else {
-			
-			otj(x1, x2, 0);
+		if (constant[x1][x2] == 0) {
+			printf("\n ошибка Нет ребра\n");
+			return;
 		}
-	//_______________________________________________________
+	if (x1 > x2) {
+		i = x1;
+		x1 = x2;
+		x2 = i;
+	}
+	copy(constant, work);
+	for (i = 0; i < SIZE; i++) {
+		work[i][x1] = constant[i][x1] || constant[i][x2];
+	}
+	for (j = 0; j < SIZE; j++) {
+		work[x1][j] = constant[x1][j] || constant[x2][j];
+	}
+	for (i = 0, i1 = x2 + 1; i < SIZE - 1; i++) {
+		for (j = 0, j1 = x2; j < SIZE - 1; j++) {
+			if (j >= x2)
+				j1++;
+			if (i < x2 && j < x2)
+				Matrix[i][j] = work[i][j];
+			if (i < x2 && j >= x2)
+				Matrix[i][j] = work[i][j1];
+			if (i >= x2 && j < x2)
+				Matrix[i][j] = work[i1][j];
+			if (i >= x2 && j >= x2)
+				Matrix[i][j] = work[i1][j1];
+		}
+		if (i >= x2) i1++;
+	}
+	Matrix[x1][x1] = 0;
+	for (i = 0; i < SIZE - 1; i++) {
+		for (j = 0; j < SIZE - 1; j++) {
+			printf("%d ", Matrix[i][j]);
+		}
+		printf("\n");
+	}
+}
+void ras(int x) {
 
+
+}
+int main(){
+	const int N = 5;
+	int G1[N][N], G2[N][N], G3[N][N], G4[N - 1][N - 1], G5[N + 1][N + 1];
+	setlocale(LC_ALL, "Rus");
+	rand_Zap(1,G1);
+	print_G(G1);
+	rand_Zap(2,G2);
+	print_G(G2);
+	
+	otj(G1, G3, G4);
+
+	stig(G1, G3, G4);
+
+
+
+
+
+
+
+
+
+
+
+	
+	printf("\n\n");
+	printf("Введите вершину, для расщепления \n");
+	scanf("%d%d", &x1);
+	ras(x1);
 }
