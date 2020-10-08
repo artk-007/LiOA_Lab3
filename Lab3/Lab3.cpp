@@ -20,8 +20,11 @@ void rand_Zap(int k, int(&Matrix)[SIZE][SIZE]) {
 		}
 }
 void print_G(int (&Matrix)[SIZE][SIZE] ){
+	printf("   1 2 3 4 5\n\n");
 	for (int i = 0; i < SIZE; i++) {
+		printf("%d  ",i+1);
 		for (int j = 0; j < SIZE; j++) {
+			
 			printf("%d ", Matrix[i][j]);
 		}
 		printf("\n");
@@ -74,6 +77,7 @@ void otj(int (&constant)[SIZE][SIZE], int (&work)[SIZE][SIZE], int (&Matrix)[SIZ
 		Matrix[x1][x1] = 1;
 	else
 		Matrix[x1][x1] = 0;
+	printf("Результат отождествления\n");
 	for (i = 0; i < SIZE - 1; i++) {
 		for (j = 0; j < SIZE - 1; j++) {
 			printf("%d ", Matrix[i][j]);
@@ -124,6 +128,7 @@ void stig(int(&constant)[SIZE][SIZE], int(&work)[SIZE][SIZE], int(&Matrix)[SIZE 
 		if (i >= x2) i1++;
 	}
 	Matrix[x1][x1] = 0;
+	printf("Результат стягивания\n");
 	for (i = 0; i < SIZE - 1; i++) {
 		for (j = 0; j < SIZE - 1; j++) {
 			printf("%d ", Matrix[i][j]);
@@ -131,9 +136,84 @@ void stig(int(&constant)[SIZE][SIZE], int(&work)[SIZE][SIZE], int(&Matrix)[SIZE 
 		printf("\n");
 	}
 }
-void ras(int x) {
+void ras(int (&constant)[SIZE][SIZE], int(&Matrix)[SIZE + 1][SIZE + 1]) {
+	int x, i, j, i1;
+	printf("Введите вершину для расщепления\n");
+	scanf("%d", &x);
+	x--;
+	for (i = 0; i < SIZE + 1; i++) {
+		for (j = 0; j < SIZE + 1; j++) {
+			if (i < x && j < x)
+				Matrix[i][j] = constant[i][j];
+			if (i < x && j > x)
+				Matrix[i][j] = constant[i][j-1];
+			if (i > x && j < x)
+				Matrix[i][j] = constant[i-1][j];
+			if (i > x && j > x)
+				Matrix[i][j] = constant[i-1][j-1];
+		}
+	}
+	for (i = 0; i < SIZE + 1; i++) {
+		for (j = 0; j < SIZE + 1; j++) {
+			if (i == x || j == x) {
+				Matrix[x][j] = 0;
+				Matrix[j][x] = 0;
+			}
+		}
+	}
+		for (j = 0; j < SIZE; j++) {
+			if (constant[x][j] = 1)
+				if (j % 2 == 0) {
+					Matrix[x][j] = 1;
+					Matrix[j][x] = 1;
+				}
+				else {
+					Matrix[x + 1][j] = 1;
+					Matrix[j][x + 1] = 1;
+				}
+		}
+		printf("Результат расщепления\n");
+	printf("\n");
+	for (i = 0; i < SIZE + 1; i++) {
 
-
+		for (j = 0; j < SIZE + 1; j++) {
+			printf("  %d ", Matrix[i][j]);
+		}
+		printf("\n");
+	}
+}
+void obed(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
+	int res[SIZE][SIZE];
+	for (int i = 0; i < SIZE; i++)
+		for (int j = 0; j < SIZE; j++) {
+			res[i][j] = Matrix1[i][j] || Matrix2[i][j];
+		}
+	printf("Результат объединения G1 и G2\n");
+	print_G(res);
+}
+void perseh(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
+	int res[SIZE][SIZE];
+	for (int i = 0; i < SIZE; i++)
+		for (int j = 0; j < SIZE; j++) {
+			if (Matrix1[i][j]==1 && Matrix2[i][j]==1)
+				res[i][j] = 1;
+			else
+				res[i][j] = 0;
+		}
+	printf("Результат пересечения G1 и G2\n");
+	print_G(res);
+}
+void kolc_sum(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
+	int res[SIZE][SIZE];
+	for (int i = 0; i < SIZE; i++)
+		for (int j = 0; j < SIZE; j++) {
+			if ((Matrix1[i][j] == 1 && Matrix2[i][j] == 0) || (Matrix1[i][j] == 0 && Matrix2[i][j] == 1))
+				res[i][j] = 1;
+			else
+				res[i][j] = 0;
+		}
+	printf("Результат кольцевой суммы G1 и G2\n");
+	print_G(res);
 }
 int main(){
 	const int N = 5;
@@ -147,20 +227,8 @@ int main(){
 	otj(G1, G3, G4);
 
 	stig(G1, G3, G4);
-
-
-
-
-
-
-
-
-
-
-
-	
-	printf("\n\n");
-	printf("Введите вершину, для расщепления \n");
-	scanf("%d%d", &x1);
-	ras(x1);
+	//ras(G1, G5);
+	obed(G1, G2);
+	perseh(G1, G2);
+	kolc_sum(G1, G2);
 }
