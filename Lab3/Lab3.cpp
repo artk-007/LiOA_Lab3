@@ -229,9 +229,7 @@ int main(){
 	print_G(G1);
 	rand_Zap(2,G2);
 	print_G(G2);
-	
 	otj(G1, G3, G4);
-
 	stig(G1, G3, G4);
 	ras(G1, G5);
 	obed(G1, G2);
