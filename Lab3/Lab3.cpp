@@ -141,7 +141,7 @@ void ras(int (&constant)[SIZE][SIZE], int(&Matrix)[SIZE + 1][SIZE + 1]) {
 	printf("Введите вершину для расщепления\n");
 	scanf("%d", &x);
 	x--;
-	for (i = 0; i < SIZE + 1; i++) {
+	/*for (i = 0; i < SIZE + 1; i++) {
 		for (j = 0; j < SIZE + 1; j++) {
 			if (i < x && j < x)
 				Matrix[i][j] = constant[i][j];
@@ -152,25 +152,32 @@ void ras(int (&constant)[SIZE][SIZE], int(&Matrix)[SIZE + 1][SIZE + 1]) {
 			if (i > x && j > x)
 				Matrix[i][j] = constant[i-1][j-1];
 		}
+	}*/
+	for (i = 0; i < SIZE; i++) {
+		for (j = 0; j < SIZE; j++) {
+			Matrix[i][j] = constant[i][j];
+		}
 	}
 	for (i = 0; i < SIZE + 1; i++) {
 		for (j = 0; j < SIZE + 1; j++) {
-			if (i == x || j == x) {
-				Matrix[x][j] = 0;
-				Matrix[j][x] = 0;
+			if (i == 5 || j == 5) {
+				Matrix[5][j] = 0;
+				Matrix[j][5] = 0;
 			}
 		}
 	}
-		/*for (j = 0; j < SIZE; j++) {
-			if (constant[x][j] == 1)
+		for (j = 0; j < SIZE; j++) {
+			if (Matrix[x][j] == 1)
 				if (j % 2 == 0) {
-					Matrix[x][j+1] = 1;
-					Matrix[j+1][x] = 1;
-					Matrix[x + 2][j] = 0;
-					Matrix[j][x + 2] = 0;
+					Matrix[5][j] = 1;
+					Matrix[j][5] = 1;
+					Matrix[x][j] = 0;
+					Matrix[j][x] = 0;
 				}
 				
-		}*/
+		}
+		Matrix[x][5] = 1;
+		Matrix[5][x] = 1;
 		printf("Результат расщепления\n");
 	printf("\n");
 	for (i = 0; i < SIZE + 1; i++) {
@@ -220,14 +227,14 @@ int main(){
 	setlocale(LC_ALL, "Rus");
 	rand_Zap(1,G1);
 	print_G(G1);
-	//rand_Zap(2,G2);
-	//print_G(G2);
+	rand_Zap(2,G2);
+	print_G(G2);
 	
-	//otj(G1, G3, G4);
+	otj(G1, G3, G4);
 
-	//stig(G1, G3, G4);
+	stig(G1, G3, G4);
 	ras(G1, G5);
-	//obed(G1, G2);
-	//perseh(G1, G2);
-	//kolc_sum(G1, G2);
+	obed(G1, G2);
+	perseh(G1, G2);
+	kolc_sum(G1, G2);
 }
