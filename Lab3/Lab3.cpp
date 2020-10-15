@@ -221,11 +221,109 @@ void kolc_sum(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 	printf("Результат кольцевой суммы G1 и G2\n");
 	print_G(res);
 }
+
+
+typedef struct Node {
+	int value;
+	struct Node* next;
+}Spisok;
+typedef struct graf {
+	int* headv;
+}G_S1[SIZE];
+
+Spisok* create_V(int name)
+{
+	// Выделение памяти под корень списка
+	Spisok* tmp = (Spisok*)malloc(sizeof(Spisok));
+	// Присваивание имя вершине
+	tmp->value = name;
+	// Присваивание указателю на следующий элемент значения NULL
+	tmp->next = NULL;
+	return(tmp);
+}
+void add_element_end(int data, Spisok* head)
+{
+	// Выделение памяти под корень списка
+	Spisok* tmp = (Spisok*)malloc(sizeof(Spisok));
+	// Присваивание значения узлу
+	tmp->value = data;
+	// Присваивание указателю на следующий элемент значения NULL
+	tmp->next = NULL;
+	// Присваивание новому указателю указателя head. 
+	// Присваивание выполняется для того, чтобы не потерять указатель на «голову» списка
+	Spisok* p = head;
+	// Сдвиг указателя p в самый конец первоначального списка
+	while (p->next != NULL)
+		p = p->next;
+	// Присваивание указателю p -> next значения указателя tmp (созданный новый узел)
+	p->next = tmp;
+}
+Spisok* remove_all(Spisok* head)
+{
+	// Сдвиг указателя head в самый конец первоначального списка
+	while (head != NULL)
+	{
+		// Присваивание новому указателю указателя head
+		Spisok* p = head;
+		head = head->next;
+		// Освобождение памяти для указателя p
+		free(p);
+	}
+	return NULL;
+}
+Spisok* remove_element(int data, Spisok* head)
+{
+	// Присваивание новому указателю  tmp указателя head, p - NULL
+	Spisok* tmp = head, * p = NULL;
+	// Проверка списка на пустоту
+	if (head == NULL)
+		return NULL;
+	// Если список не пуст, поиск указателя на искомый элемент
+	while (tmp && tmp->value != data)
+	{
+		p = tmp;
+		tmp = tmp->next;
+	}
+	// Если удаляемый элемент первый
+	if (tmp == head)
+	{
+		free(head);
+		return tmp->next;
+	}
+	// Если в списке нет искомого элемента, то возвращаем первоначальный список
+	if (!tmp)
+		return head;
+	// Присваивание новому указателю указателя tmp
+	p->next = tmp->next;
+	// Освобождение памяти для указателя tmp
+	free(tmp);
+	return head;
+}
+void print(Spisok* head) {
+	Spisok* v = head;
+	while (v != NULL)
+	{
+		// Вывод значения узла
+		printf("%d ", v->value);
+		// Сдвиг указателя к следующему узлу
+		v = v->next;
+	}
+}
+void graf_iz_matrix(int(&Matrix)[SIZE][SIZE]) {
+	for (int i = 0; i < SIZE; i++) {
+		Node* tmp=create_V(i);
+		for (int j = 0; j < SIZE; j++) {
+			if (Matrix[i][j] == 1)
+				add_element_end(j, tmp);
+		}
+		G_S1[i]->headv = &tmp;
+	}
+}
 int main(){
 	const int N = 5;
-	int G1[N][N], G2[N][N], G3[N][N], G4[N - 1][N - 1], G5[N + 1][N + 1];
+	int G1[SIZE][SIZE], G2[N][N], G3[N][N], G4[N - 1][N - 1], G5[N + 1][N + 1];
 	setlocale(LC_ALL, "Rus");
-	rand_Zap(1,G1);
+	/*rand_Zap(1,G1);
 	print_G(G1);
 	rand_Zap(2,G2);
 	print_G(G2);
@@ -234,5 +332,15 @@ int main(){
 	ras(G1, G5);
 	obed(G1, G2);
 	perseh(G1, G2);
-	kolc_sum(G1, G2);
+	kolc_sum(G1, G2);*/
+	rand_Zap(1, G1);
+	print_G(G1);
+	perevod(G1)
+	v1 = create(1);
+	for (int i = 2; i < 6; i++) {
+		add_element_end(i, v1);
+	}
+	print(v1);
+
+
 }
