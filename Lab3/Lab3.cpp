@@ -5,52 +5,46 @@
 #include <time.h>
 #include <locale.h>
 #define SIZE 5
-void rand_Zap(int k, int(&Matrix)[SIZE][SIZE]) {
+void rand_Zap(int k, int* Matrix, int n) {
 	srand(time(NULL) * k);
 	printf("G%d \n",k);
-	for (int i = 0; i < SIZE; i++)
-		for (int j = 0; j < SIZE; j++) {
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
 			if (i == j) {
-				Matrix[i][j] = 0;
+				Matrix[i * n + j] = 0;
 			}
 			if (i < j) {
-				Matrix[i][j] = rand() % 2;
-				Matrix[j][i] = Matrix[i][j];
+				Matrix[i * n + j] = rand() % 2;
+				Matrix[j * n + i] = Matrix[i * n + j];
 			}
 		}
 }
-void print_G(int (&Matrix)[SIZE][SIZE] ){
-	printf("   1 2 3 4 5\n\n");
-	for (int i = 0; i < SIZE; i++) {
-		printf("%d  ",i+1);
-		for (int j = 0; j < SIZE; j++) {
+void print_G(int *Matrix, int n){
+	printf("  ");
+	for (int i = 0; i < n; i++)
+		printf("%3d", i + 1);
+	printf("\n\n");
+	for (int i = 0; i < n; i++) {
+		printf("%2d",i+1);
+		for (int j = 0; j <n; j++) {
 			
-			printf("%d ", Matrix[i][j]);
+			printf("%3d", Matrix[i*n+j]);
 		}
 		printf("\n");
 	}
 	printf("\n");
+
+	
 }
 void copy(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 	for (int i = 0; i < SIZE; i++)
 		for (int j = 0; j < SIZE; j++)
 			Matrix2[i][j] = Matrix1[i][j];
 }
-void otj(int (&constant)[SIZE][SIZE], int (&work)[SIZE][SIZE], int (&Matrix)[SIZE - 1][SIZE - 1]){
-	int x1, x2;
-	printf("Введите 2 вершины для их отождествления \n");
-	scanf("%d%d", &x1, &x2);
-	int	i, j, i1, j1;
-	x1--; x2--;
-	if ((x1 > SIZE - 1) || (x2 > SIZE - 1) || (x1 < 0) || (x2 < 0)) {
-		printf("\n ошибка Нет вершин(ы)\n");
-		return;
-	}
-	if (x1 > x2) {
-		i = x1;
-		x1 = x2;
-		x2 = i;
-	}
+
+void otj(int (&constant)[SIZE][SIZE], int (&work)[SIZE][SIZE],int x1, int x2, int stig ){
+	int G4[SIZE - 1][SIZE - 1], i, j, i1, j1;
+	
 	copy(constant, work);
 	for (i = 0; i < SIZE; i++) {
 		work[i][x1] = constant[i][x1] || constant[i][x2];
@@ -63,81 +57,25 @@ void otj(int (&constant)[SIZE][SIZE], int (&work)[SIZE][SIZE], int (&Matrix)[SIZ
 			if (j >= x2)
 				j1++;
 			if (i < x2 && j < x2)
-				Matrix[i][j] = work[i][j];
+				G4[i][j] = work[i][j];
 			if (i < x2 && j >= x2)
-				Matrix[i][j] = work[i][j1];
+				G4[i][j] = work[i][j1];
 			if (i >= x2 && j < x2)
-				Matrix[i][j] = work[i1][j];
+				G4[i][j] = work[i1][j];
 			if (i >= x2 && j >= x2)
-				Matrix[i][j] = work[i1][j1];
+				G4[i][j] = work[i1][j1];
 		}
 		if (i >= x2) i1++;
 	}
-	if (constant[x1][x2] == 1)
-		Matrix[x1][x1] = 1;
+	if (constant[x1][x2] == 1 && stig==0)
+		G4[x1][x1] = 1;
 	else
-		Matrix[x1][x1] = 0;
-	printf("Результат отождествления\n");
-	for (i = 0; i < SIZE - 1; i++) {
-		for (j = 0; j < SIZE - 1; j++) {
-			printf("%d ", Matrix[i][j]);
-		}
-		printf("\n");
-	}
+		G4[x1][x1] = 0;
+	printf("Результат:\n");
+	print_G(&G4[0][0], SIZE - 1);
 }
-void stig(int(&constant)[SIZE][SIZE], int(&work)[SIZE][SIZE], int(&Matrix)[SIZE - 1][SIZE - 1]) {
-	int x1, x2;
-	printf("Введите 2 вершины, смежные ребру, которое нужно стянуть \n");
-	scanf("%d%d", &x1, &x2);
-	int	i, j, i1, j1;
-	x1--; x2--;
-	if ((x1 > SIZE - 1) || (x2 > SIZE - 1) || (x1 < 0) || (x2 < 0)) {
-		printf("\n ошибка Нет вершин(ы)\n");
-		return;
-	}
-	else
-		if (constant[x1][x2] == 0) {
-			printf("\n ошибка Нет ребра\n");
-			return;
-		}
-	if (x1 > x2) {
-		i = x1;
-		x1 = x2;
-		x2 = i;
-	}
-	copy(constant, work);
-	for (i = 0; i < SIZE; i++) {
-		work[i][x1] = constant[i][x1] || constant[i][x2];
-	}
-	for (j = 0; j < SIZE; j++) {
-		work[x1][j] = constant[x1][j] || constant[x2][j];
-	}
-	for (i = 0, i1 = x2 + 1; i < SIZE - 1; i++) {
-		for (j = 0, j1 = x2; j < SIZE - 1; j++) {
-			if (j >= x2)
-				j1++;
-			if (i < x2 && j < x2)
-				Matrix[i][j] = work[i][j];
-			if (i < x2 && j >= x2)
-				Matrix[i][j] = work[i][j1];
-			if (i >= x2 && j < x2)
-				Matrix[i][j] = work[i1][j];
-			if (i >= x2 && j >= x2)
-				Matrix[i][j] = work[i1][j1];
-		}
-		if (i >= x2) i1++;
-	}
-	Matrix[x1][x1] = 0;
-	printf("Результат стягивания\n");
-	for (i = 0; i < SIZE - 1; i++) {
-		for (j = 0; j < SIZE - 1; j++) {
-			printf("%d ", Matrix[i][j]);
-		}
-		printf("\n");
-	}
-}
-void ras(int (&constant)[SIZE][SIZE], int(&Matrix)[SIZE + 1][SIZE + 1]) {
-	int x, i, j, i1;
+void ras(int (&constant)[SIZE][SIZE]) {
+	int x, i, j, i1, Matrix[SIZE + 1][SIZE + 1];
 	printf("Введите вершину для расщепления\n");
 	scanf("%d", &x);
 	x--;
@@ -178,16 +116,10 @@ void ras(int (&constant)[SIZE][SIZE], int(&Matrix)[SIZE + 1][SIZE + 1]) {
 		}
 		Matrix[x][5] = 1;
 		Matrix[5][x] = 1;
-		printf("Результат расщепления\n");
-	printf("\n");
-	for (i = 0; i < SIZE + 1; i++) {
-
-		for (j = 0; j < SIZE + 1; j++) {
-			printf("  %d ", Matrix[i][j]);
-		}
-		printf("\n");
-	}
+		printf("Результат расщепления\n\n");
+		print_G(&Matrix[0][0], SIZE + 1);
 }
+
 void obed(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 	int res[SIZE][SIZE];
 	for (int i = 0; i < SIZE; i++)
@@ -195,7 +127,7 @@ void obed(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 			res[i][j] = Matrix1[i][j] || Matrix2[i][j];
 		}
 	printf("Результат объединения G1 и G2\n");
-	print_G(res);
+	print_G(&res[0][0], SIZE);
 }
 void perseh(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 	int res[SIZE][SIZE];
@@ -207,7 +139,7 @@ void perseh(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 				res[i][j] = 0;
 		}
 	printf("Результат пересечения G1 и G2\n");
-	print_G(res);
+	print_G(&res[0][0], SIZE);
 }
 void kolc_sum(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 	int res[SIZE][SIZE];
@@ -219,9 +151,37 @@ void kolc_sum(int(&Matrix1)[SIZE][SIZE], int(&Matrix2)[SIZE][SIZE]) {
 				res[i][j] = 0;
 		}
 	printf("Результат кольцевой суммы G1 и G2\n");
-	print_G(res);
+	print_G(&res[0][0], SIZE);
 }
 
+void dekart(int* Matrix1, int* Matrix2) {
+	int i = 0, j = 0, Gdek[SIZE * SIZE][SIZE * SIZE];
+	for (int i1 = 0; i1 < SIZE; i1++)
+		for (int j1 = 0; j1 < SIZE; j1++, i++)
+			for (int i2 = 0, j = 0; i2 < SIZE; i2++)
+				for (int j2 = 0; j2 < SIZE; j2++) {
+					if (i1 == i2 && j1 != j2)
+					{
+						Gdek[i][j] = Matrix2[j1* SIZE +j2];
+					}
+					if (i1 != i2 && j1 == j2)
+					{
+						Gdek[i][j] = Matrix1[i1* SIZE +i2];
+
+					}
+					if (i1 != i2 && j1 != j2)
+					{
+						Gdek[i][j] = 0;
+					}
+					if (i1 == i2 && j1 == j2)
+					{
+						Gdek[i][j] = 0;
+					}
+					j++;
+				}
+	printf("\n\n");
+	print_G(&Gdek[0][0], SIZE * SIZE);
+}
 
 typedef struct Node {
 	int value;
@@ -322,49 +282,58 @@ void print(Spisok* head) {
 	print(v1[0]);
 }*/
 int main(){
-	int G1[SIZE][SIZE], G2[SIZE][SIZE], G3[SIZE][SIZE], G4[SIZE - 1][SIZE - 1], G5[SIZE + 1][SIZE + 1], Gdek[SIZE * SIZE][SIZE* SIZE];
+	int G1[SIZE][SIZE], G2[SIZE][SIZE], work[SIZE][SIZE], i, x1, x2, j;
 	setlocale(LC_ALL, "Rus");
-	rand_Zap(1,G1);
-	print_G(G1);
-	rand_Zap(2,G2);
-	print_G(G2);
-	/*otj(G1, G3, G4);
-	stig(G1, G3, G4);
-	ras(G1, G5);
-	obed(G1, G2);
-	perseh(G1, G2);
-	kolc_sum(G1, G2);*/
-	int i = 0, j = 0;
-	for (int i1 = 0; i1 < SIZE; i1++)
-		for (int j1 = 0; j1 < SIZE; j1++,i++)
-			for (int i2 = 0, j=0; i2 < SIZE; i2++)
-				for (int j2 = 0; j2 < SIZE; j2++) {
-					if (i1 == i2 && j1 != j2)
-					{
-						Gdek[i][j] = G2[j1][j2];
-					}
-					if (i1 != i2 && j1 == j2)
-					{
-						Gdek[i][j] = G1[i1][i2];
-
-					}
-					if (i1 != i2 && j1 != j2)
-					{
-						Gdek[i][j] = 0;
-					}
-					if (i1 == i2 && j1 == j2)
-					{
-						Gdek[i][j] = 0;
-					}
-					j++;
-				}
-	printf("\n\n");
-	for (int i = 0; i < SIZE * SIZE; i++) {
-		for (int j = 0; j < SIZE * SIZE; j++) {
-
-			printf("%d ", Gdek[i][j]);
-		}
-		printf("\n");
+	rand_Zap(1, &G1[0][0], SIZE);
+	print_G(&G1[0][0], SIZE);
+	rand_Zap(2, &G2[0][0], SIZE);
+	print_G(&G2[0][0], SIZE);
+	
+	/*_________________________отождествление_______________________________*/
+	printf("Введите 2 вершины для их отождествления \n");
+	scanf("%d%d", &x1, &x2);
+	if (x1 > x2) {
+		i = x1;
+		x1 = x2;
+		x2 = i;
 	}
-
+	
+	if ((x1 >= 1) && (x2 <= SIZE)) {
+		x1--; x2--;
+		otj(G1, work, x1, x2,0);
+	}
+	else
+		printf("\n ошибка Нет вершин(ы)\n");
+	/*_________________________стян_______________________________*/
+	printf("Введите 2 вершины, смежные ребру, которое нужно стянуть \n");
+	scanf("%d%d", &x1, &x2);
+	if (x1 > x2) {
+		i = x1;
+		x1 = x2;
+		x2 = i;
+	}
+	if ((x1 >= 1) && (x2 <= SIZE)) {
+		if (G1[x1-1][x2-1] == 1)
+		{
+			x1--; x2--;
+			otj(G1, work, x1, x2,1);
+		}
+		else printf("\n ошибка Нет ребра\n");
+	}
+	else
+		printf("\n ошибка Нет вершин(ы)\n");
+	/*_________________________Расщепление_______________________________*/
+	ras(G1);
+	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
+	getchar();
+	obed(G1, G2);
+	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
+	getchar();
+	perseh(G1, G2);
+	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
+	getchar();
+	kolc_sum(G1, G2);
+	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
+	getchar();
+	dekart(&G1[0][0], &G2[0][0]);
 }
