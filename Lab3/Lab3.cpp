@@ -228,7 +228,7 @@ typedef struct Node {
 	struct Node* next;
 }Spisok;
 typedef struct graf {
-	int* headv;
+	int* p_head;
 }G_S1[SIZE];
 
 Spisok* create_V(int name)
@@ -309,38 +309,62 @@ void print(Spisok* head) {
 		v = v->next;
 	}
 }
-void graf_iz_matrix(int(&Matrix)[SIZE][SIZE]) {
-	for (int i = 0; i < SIZE; i++) {
-		Node* tmp=create_V(i);
+/*void graf_iz_matrix(int(&Matrix)[SIZE][SIZE]) {
+	Node* v1[SIZE];
+	for (int i = 0; i < 1; i++) {
+		Node* tmp = create_V(i);
 		for (int j = 0; j < SIZE; j++) {
 			if (Matrix[i][j] == 1)
 				add_element_end(j, tmp);
 		}
-		G_S1[i]->headv = &tmp;
+		v1[i] = tmp;
 	}
-}
+	print(v1[0]);
+}*/
 int main(){
-	const int N = 5;
-	int G1[SIZE][SIZE], G2[N][N], G3[N][N], G4[N - 1][N - 1], G5[N + 1][N + 1];
+	int G1[SIZE][SIZE], G2[SIZE][SIZE], G3[SIZE][SIZE], G4[SIZE - 1][SIZE - 1], G5[SIZE + 1][SIZE + 1], Gdek[SIZE * SIZE][SIZE* SIZE];
 	setlocale(LC_ALL, "Rus");
-	/*rand_Zap(1,G1);
+	rand_Zap(1,G1);
 	print_G(G1);
 	rand_Zap(2,G2);
 	print_G(G2);
-	otj(G1, G3, G4);
+	/*otj(G1, G3, G4);
 	stig(G1, G3, G4);
 	ras(G1, G5);
 	obed(G1, G2);
 	perseh(G1, G2);
 	kolc_sum(G1, G2);*/
-	rand_Zap(1, G1);
-	print_G(G1);
-	perevod(G1)
-	v1 = create(1);
-	for (int i = 2; i < 6; i++) {
-		add_element_end(i, v1);
-	}
-	print(v1);
+	int i = 0, j = 0;
+	for (int i1 = 0; i1 < SIZE; i1++)
+		for (int j1 = 0; j1 < SIZE; j1++,i++)
+			for (int i2 = 0, j=0; i2 < SIZE; i2++)
+				for (int j2 = 0; j2 < SIZE; j2++) {
+					if (i1 == i2 && j1 != j2)
+					{
+						Gdek[i][j] = G2[j1][j2];
+					}
+					if (i1 != i2 && j1 == j2)
+					{
+						Gdek[i][j] = G1[i1][i2];
 
+					}
+					if (i1 != i2 && j1 != j2)
+					{
+						Gdek[i][j] = 0;
+					}
+					if (i1 == i2 && j1 == j2)
+					{
+						Gdek[i][j] = 0;
+					}
+					j++;
+				}
+	printf("\n\n");
+	for (int i = 0; i < SIZE * SIZE; i++) {
+		for (int j = 0; j < SIZE * SIZE; j++) {
+
+			printf("%d ", Gdek[i][j]);
+		}
+		printf("\n");
+	}
 
 }
