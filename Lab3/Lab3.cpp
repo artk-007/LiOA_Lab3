@@ -79,18 +79,7 @@ void ras(int (&constant)[SIZE][SIZE]) {
 	printf("Введите вершину для расщепления\n");
 	scanf("%d", &x);
 	x--;
-	/*for (i = 0; i < SIZE + 1; i++) {
-		for (j = 0; j < SIZE + 1; j++) {
-			if (i < x && j < x)
-				Matrix[i][j] = constant[i][j];
-			if (i < x && j > x)
-				Matrix[i][j] = constant[i][j-1];
-			if (i > x && j < x)
-				Matrix[i][j] = constant[i-1][j];
-			if (i > x && j > x)
-				Matrix[i][j] = constant[i-1][j-1];
-		}
-	}*/
+	
 	for (i = 0; i < SIZE; i++) {
 		for (j = 0; j < SIZE; j++) {
 			Matrix[i][j] = constant[i][j];
