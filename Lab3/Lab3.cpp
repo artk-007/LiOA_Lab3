@@ -176,10 +176,8 @@ typedef struct Node {
 	int value;
 	struct Node* next;
 }Spisok;
-typedef struct graf {
-	int* p_head;
-}G_S1[SIZE];
 
+Spisok* G_S1[SIZE];
 Spisok* create_V(int name)
 {
 	// Выделение памяти под корень списка
@@ -250,34 +248,68 @@ Spisok* remove_element(int data, Spisok* head)
 }
 void print(Spisok* head) {
 	Spisok* v = head;
+	if (v != NULL) {
+		printf("%d:  ", v->value + 1);
+		v = v->next;
+	}
 	while (v != NULL)
 	{
 		// Вывод значения узла
-		printf("%d ", v->value);
+		printf("%d ", v->value+1);
 		// Сдвиг указателя к следующему узлу
 		v = v->next;
 	}
 }
-/*void graf_iz_matrix(int(&Matrix)[SIZE][SIZE]) {
-	Node* v1[SIZE];
-	for (int i = 0; i < 1; i++) {
+void graf_iz_matrix(int(&Matrix)[SIZE][SIZE]) {
+	for (int i = 0; i < SIZE; i++) {
 		Node* tmp = create_V(i);
 		for (int j = 0; j < SIZE; j++) {
 			if (Matrix[i][j] == 1)
 				add_element_end(j, tmp);
 		}
-		v1[i] = tmp;
+		G_S1[i] = tmp;
 	}
-	print(v1[0]);
-}*/
+	for (int i = 0; i < SIZE; i++) {
+		print(G_S1[i]);
+		printf("\n");
+	}
+	printf("\n");
+}
+void otj_S(Spisok* (&P)[SIZE],int x1, int x2) {
+	
+
+	for (int i = 0; i < SIZE; i++) {
+		Spisok* v = P[i];
+		
+		if (v->value != x2 && v->value != x1) {
+			if (v != NULL)	v = v->next;
+			while (v != NULL) {
+				if (v->value == x2)
+					v->value = x1;
+				v = v->next;
+			}
+		}
+		if (v->value ==x2)
+			remove_all(P[i]);
+		
+	}
+	for (int i = 0; i < SIZE; i++) {
+		if (i == x2) continue;
+		print(G_S1[i]);
+		printf("\n");
+	}
+	printf("\n");
+	
+}
 int main(){
-	int G1[SIZE][SIZE], G2[SIZE][SIZE], work[SIZE][SIZE], i, x1, x2, j;
+	int G1[SIZE][SIZE], G2[SIZE][SIZE], work[SIZE][SIZE], i, x1, x2, j, A[20][20];
 	setlocale(LC_ALL, "Rus");
 	rand_Zap(1, &G1[0][0], SIZE);
 	print_G(&G1[0][0], SIZE);
 	rand_Zap(2, &G2[0][0], SIZE);
 	print_G(&G2[0][0], SIZE);
-	
+	graf_iz_matrix(G1);
+	graf_iz_matrix(G2);
 	/*_________________________отождествление_______________________________*/
 	printf("Введите 2 вершины для их отождествления \n");
 	scanf("%d%d", &x1, &x2);
@@ -293,7 +325,21 @@ int main(){
 	}
 	else
 		printf("\n ошибка Нет вершин(ы)\n");
-	/*_________________________стян_______________________________*/
+	printf("Введите 2 вершины для их отождествления \n");
+	scanf("%d%d", &x1, &x2);
+	if (x1 > x2) {
+		i = x1;
+		x1 = x2;
+		x2 = i;
+	}
+
+	if ((x1 >= 1) && (x2 <= SIZE)) {
+		x1--; x2--;
+		otj_S(G_S1, x1, x2);
+	}
+	else
+		printf("\n ошибка Нет вершин(ы)\n");
+	/*_________________________стян_______________________________
 	printf("Введите 2 вершины, смежные ребру, которое нужно стянуть \n");
 	scanf("%d%d", &x1, &x2);
 	if (x1 > x2) {
@@ -311,7 +357,7 @@ int main(){
 	}
 	else
 		printf("\n ошибка Нет вершин(ы)\n");
-	/*_________________________Расщепление_______________________________*/
+	/*_________________________Расщепление_______________________________
 	ras(G1);
 	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
 	getchar();
@@ -325,4 +371,5 @@ int main(){
 	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
 	getchar();
 	dekart(&G1[0][0], &G2[0][0]);
+	*/
 }
