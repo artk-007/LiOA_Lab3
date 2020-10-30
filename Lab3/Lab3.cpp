@@ -20,9 +20,12 @@ void rand_Zap(int k, int* Matrix, int n) {
 		}
 }
 void print_G(int *Matrix, int n){
+	
 	printf("  ");
-	for (int i = 0; i < n; i++)
-		printf("%3d", i + 1);
+	for (int i = 0; i < n; i++) {
+		
+			printf("%3d", i + 1);
+	}
 	printf("\n\n");
 	for (int i = 0; i < n; i++) {
 		printf("%2d",i+1);
@@ -178,6 +181,7 @@ typedef struct Node {
 }Spisok;
 
 Spisok* G_S1[SIZE];
+Spisok* G_S2[SIZE];
 Spisok* create_V(int name)
 {
 	// Выделение памяти под корень списка
@@ -260,47 +264,49 @@ void print(Spisok* head) {
 		v = v->next;
 	}
 }
-void graf_iz_matrix(int(&Matrix)[SIZE][SIZE]) {
+void graf_iz_matrix(int(&Matrix)[SIZE][SIZE], Spisok* (&P)[SIZE]) {
 	for (int i = 0; i < SIZE; i++) {
 		Node* tmp = create_V(i);
 		for (int j = 0; j < SIZE; j++) {
 			if (Matrix[i][j] == 1)
 				add_element_end(j, tmp);
 		}
-		G_S1[i] = tmp;
+		P[i] = tmp;
 	}
 	for (int i = 0; i < SIZE; i++) {
-		print(G_S1[i]);
+		print(P[i]);
 		printf("\n");
 	}
 	printf("\n");
 }
-void otj_S(Spisok* (&P)[SIZE],int x1, int x2) {
+/*void otj_S(Spisok* (&P)[SIZE],int x1, int x2) {
 	
-
+	Spisok* fx1;
 	for (int i = 0; i < SIZE; i++) {
 		Spisok* v = P[i];
-		
-		if (v->value != x2 && v->value != x1) {
-			if (v != NULL)	v = v->next;
+		fx1=create_V(x1);
+		if (v->value != x2) {
+			if (v->next != NULL)	v = v->next;
 			while (v != NULL) {
-				if (v->value == x2)
+				if (v->value == x2) {
 					v->value = x1;
+					add_element_end(v->value, fx1);
+				}
 				v = v->next;
 			}
 		}
-		if (v->value ==x2)
-			remove_all(P[i]);
-		
 	}
+	//P[x2] = remove_all(P[x2]);
+	//P[x1] = remove_all(P[x1]);
+	P[x1] = fx1;
 	for (int i = 0; i < SIZE; i++) {
 		if (i == x2) continue;
-		print(G_S1[i]);
+		print(P[i]);
 		printf("\n");
 	}
-	printf("\n");
-	
-}
+	printf("\n");}
+	*/
+
 int main(){
 	int G1[SIZE][SIZE], G2[SIZE][SIZE], work[SIZE][SIZE], i, x1, x2, j, A[20][20];
 	setlocale(LC_ALL, "Rus");
@@ -308,8 +314,8 @@ int main(){
 	print_G(&G1[0][0], SIZE);
 	rand_Zap(2, &G2[0][0], SIZE);
 	print_G(&G2[0][0], SIZE);
-	graf_iz_matrix(G1);
-	graf_iz_matrix(G2);
+	graf_iz_matrix(G1,G_S1);
+	graf_iz_matrix(G2,G_S2);
 	/*_________________________отождествление_______________________________*/
 	printf("Введите 2 вершины для их отождествления \n");
 	scanf("%d%d", &x1, &x2);
@@ -325,7 +331,7 @@ int main(){
 	}
 	else
 		printf("\n ошибка Нет вершин(ы)\n");
-	printf("Введите 2 вершины для их отождествления \n");
+	/*printf("Введите 2 вершины для их отождествления \n");
 	scanf("%d%d", &x1, &x2);
 	if (x1 > x2) {
 		i = x1;
@@ -338,8 +344,8 @@ int main(){
 		otj_S(G_S1, x1, x2);
 	}
 	else
-		printf("\n ошибка Нет вершин(ы)\n");
-	/*_________________________стян_______________________________
+		printf("\n ошибка Нет вершин(ы)\n");*/
+	/*_________________________стян_______________________________*/
 	printf("Введите 2 вершины, смежные ребру, которое нужно стянуть \n");
 	scanf("%d%d", &x1, &x2);
 	if (x1 > x2) {
@@ -357,7 +363,7 @@ int main(){
 	}
 	else
 		printf("\n ошибка Нет вершин(ы)\n");
-	/*_________________________Расщепление_______________________________
+	/*_________________________Расщепление_______________________________*/
 	ras(G1);
 	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
 	getchar();
@@ -371,5 +377,5 @@ int main(){
 	printf("\n Нажмите любую клавишу, чтобы продолжить\n");
 	getchar();
 	dekart(&G1[0][0], &G2[0][0]);
-	*/
+	
 }
